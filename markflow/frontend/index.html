@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarkFlow — Paste Anything. Get Beautiful PDFs.</title>
+  <link rel="icon" type="image/svg+xml" href="http://localhost:8000/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Ambient glow orbs -->
+    <div class="ambient" aria-hidden="true"></div>
+
+    <!-- ═══════════════════════════════════════════
+         Left Panel — Editor
+         ═══════════════════════════════════════════ -->
+    <section class="panel panel--editor">
+      <header class="brand">
+        <div class="brand__mark" aria-hidden="true">
+          <span>M</span>
+        </div>
+        <div class="brand__text">
+          <h1 class="brand__name">MarkFlow</h1>
+          <p class="brand__tagline">Paste anything. Get beautiful PDFs.</p>
+        </div>
+      </header>
+
+      <div class="editor">
+        <div class="editor__header">
+          <label for="content-input" class="editor__label">Content</label>
+          <span id="char-count" class="editor__count">0</span>
+        </div>
+        <textarea
+          id="content-input"
+          class="editor__textarea"
+          placeholder="# Hello World
+
+Paste your **Markdown**, JSON, HTML, or plain text here.
+
+## Features
+
+- Beautiful typography
+- Code blocks with syntax styling
+- Tables with alternating rows
+- Page numbers and headers
+
+```python
+def greet(name):
+    return f'Hello, {name}!'
+```"
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <div class="style-prompt">
+        <button id="css-toggle" class="style-prompt__toggle" type="button">
+          <span class="css-toggle-arrow">▸</span>
+          <span class="style-prompt__label">Style Prompt</span>
+        </button>
+        <div id="css-panel" class="style-prompt__panel collapsed">
+          <textarea
+            id="style-prompt-input"
+            class="style-prompt__textarea"
+            placeholder="Describe the look you want…
+e.g. 'Academic paper with serif font, single column, A4, page numbers'
+or 'Modern dark theme report with code highlighting, two-column'
+or 'Minimal cream background, clean tables, wide margins'"
+            spellcheck="true"
+          ></textarea>
+        </div>
+      </div>
+
+      <footer class="editor__footer">
+        <div class="shortcut">
+          <kbd>⌘</kbd><kbd>↵</kbd>
+          <span>to generate</span>
+        </div>
+        <div class="editor__info">
+          <span class="editor__info-icon" aria-hidden="true">∞</span>
+          No page limit
+        </div>
+      </footer>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         Right Panel — Controls & Output
+         ═══════════════════════════════════════════ -->
+    <section class="panel panel--output">
+      <div class="controls">
+        <button id="generate-btn" class="btn btn--primary" type="button">
+          <span class="btn__text">Generate PDF</span>
+          <span class="btn__shine" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- Idle State -->
+      <div id="idle-state" class="state state--idle">
+        <div class="idle__illustration" aria-hidden="true">
+          <div class="idle__page idle__page--back">
+            <div class="idle__line idle__line--heading"></div>
+            <div class="idle__line idle__line--body"></div>
+            <div class="idle__line idle__line--body"></div>
+            <div class="idle__line idle__line--body idle__line--short"></div>
+          </div>
+          <div class="idle__page idle__page--front">
+            <div class="idle__line idle__line--heading"></div>
+            <div class="idle__line idle__line--body"></div>
+            <div class="idle__line idle__line--body"></div>
+            <div class="idle__line idle__line--body idle__line--short"></div>
+            <div class="idle__line idle__line--body"></div>
+          </div>
+        </div>
+        <p class="idle__text">Your PDF preview will appear here</p>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="state state--loading hidden">
+        <div class="loader" aria-label="Loading">
+          <div class="loader__bar"></div>
+          <div class="loader__bar"></div>
+          <div class="loader__bar"></div>
+        </div>
+        <p class="loader__text">Generating your PDF…</p>
+        <p class="loader__hint">This may take up to 30 seconds</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="state state--error hidden">
+        <div class="error-card">
+          <div class="error-card__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <circle cx="10" cy="10" r="8"/>
+              <line x1="10" y1="6" x2="10" y2="11"/>
+              <circle cx="10" cy="14" r="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <p id="error-message" class="error-card__message">Something went wrong.</p>
+        </div>
+      </div>
+
+      <!-- Success State -->
+      <div id="success-state" class="state state--success hidden">
+        <div class="success">
+          <div class="success__badge">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="2,6 4.5,8.5 10,3"/>
+            </svg>
+            PDF generated
+          </div>
+          <div class="preview">
+            <object id="pdf-preview" type="application/pdf" class="preview__object"></object>
+          </div>
+          <div class="success__actions">
+            <a id="download-btn" class="btn btn--download" href="#" download="markflow-output.pdf">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 2v8"/>
+                <polyline points="4,7 8,11 12,7"/>
+                <line x1="2" y1="13" x2="14" y2="13"/>
+              </svg>
+              Download PDF
+            </a>
+            <button id="reset-btn" class="btn btn--ghost" type="button">Generate Another</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

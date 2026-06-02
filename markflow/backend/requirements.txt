@@ -1,0 +1,6 @@
+fastapi>=0.129.1
+uvicorn[standard]>=0.48.0
+weasyprint>=68.1
+httpx>=0.28.1
+markdown-it-py>=4.2.0
+python-dotenv>=1.2.2
