@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: markflow
+    runtime: python
+    buildCommand: apt-get update && apt-get install -y libpango-1.0-0 libharfbuzz0b libffi-dev libcairo2 libgdk-pixbuf2.0-0 && pip install -r markflow/backend/requirements.txt
+    startCommand: cd markflow/backend && uvicorn main:app --host 0.0.0.0 --port $PORT
