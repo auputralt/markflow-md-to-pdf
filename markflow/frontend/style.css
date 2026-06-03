@@ -336,8 +336,47 @@ body {
 }
 
 .style-prompt__panel:not(.collapsed) {
-  max-height: 220px;
+  max-height: 320px;
   opacity: 1;
+}
+
+/* --- Style Presets --- */
+.style-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px 8px;
+}
+
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
+  white-space: nowrap;
+}
+
+.preset-chip:hover {
+  background: var(--surface-raised);
+  color: var(--text-dim);
+  border-color: var(--border-hover);
+}
+
+.preset-chip--active {
+  background: var(--accent-muted);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .style-prompt__textarea {
