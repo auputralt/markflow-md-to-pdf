@@ -85,21 +85,27 @@ that would cause block-level elements to sit next to each other horizontally.
 - NEVER use CSS columns on list items (<li>, <ol>, <ul>) unless explicitly asked.
 - Paragraphs (<p>) must remain block. List items (<li>) must stack vertically.
 
+STYLE FREEDOM:
+- The user's style description is your PRIMARY direction. Follow it fully.
+- You may use: shadows, gradients, colored accents, decorative borders, \
+background colors, custom fonts, creative layouts, and any visual styling \
+the user requests. No aesthetic restrictions.
+- Be creative and make it look beautiful. The user wants something unique.
+
 CSS REQUIREMENTS:
 1. @page rules with proper margin boxes for WeasyPrint Paged Media.
 2. Use CSS custom properties (:root tokens) for colors, spacing, fonts.
 3. Style ALL elements: h1-h6, p, code, pre, blockquote, table, th, td, ul, ol, li, \
 img, a, hr, strong, em, del, mark, figure, figcaption, dl, dt, dd.
 4. No CSS Grid. Flexbox OK only for internal element layout, NOT for list/item \
-flow direction. No shadows, no gradients, no decorative elements.
+flow direction.
 5. Output ONLY raw CSS. No markdown fences, no comments, no HTML, no explanations.
 6. WeasyPrint compatible CSS Paged Media only.
-7. Prioritize the user's aesthetic direction over any default styling.
-8. All headings: page-break-after: avoid.
-9. Tables, figures, pre, blockquote, tr: page-break-inside: avoid.
-10. thead { display: table-header-group; } for repeated table headers.
-11. Keep li, ol, ul as display: list-item / block. Do NOT override to inline.
-12. Keep p as display: block. Do NOT override to inline or flex.
+7. All headings: page-break-after: avoid.
+8. Tables, figures, pre, blockquote, tr: page-break-inside: avoid.
+9. thead { display: table-header-group; } for repeated table headers.
+10. Keep li, ol, ul as display: list-item / block. Do NOT override to inline.
+11. Keep p as display: block. Do NOT override to inline or flex.
 """
 
 # Timeout constants
