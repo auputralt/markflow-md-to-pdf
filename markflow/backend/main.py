@@ -31,7 +31,13 @@ REQUEST_TIMEOUT_SECONDS = 120
 # Maximum content length (chars) — prevents OOM on huge payloads
 MAX_CONTENT_LENGTH = 500_000
 
+# Paths
+_FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
 app = FastAPI(title="MarkFlow", version="1.0.0", description="Content to styled PDF")
+
+# Serve frontend static files
+app.mount("/static", StaticFiles(directory=str(_FRONTEND_DIR)), name="frontend")
 
 # CORS: use specific origins in production; wildcard without credentials for dev
 _allowed_origins = os.getenv("CORS_ORIGINS", "*").split(",")
@@ -91,6 +97,15 @@ async def favicon():
     if favicon_path.exists():
         return FileResponse(str(favicon_path), media_type="image/svg+xml")
     return Response(status_code=204)
+
+
+@app.get("/")
+async def serve_frontend():
+    """Serve the single-page frontend."""
+    index_path = _FRONTEND_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path), media_type="text/html")
+    return Response(content="Frontend not found", status_code=404)
 
 
 @app.post(

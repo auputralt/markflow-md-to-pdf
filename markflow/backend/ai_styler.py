@@ -270,10 +270,10 @@ def _parse_css_response(data: dict, provider_name: str) -> str:
 
 async def _request_generate(client, provider, model, timeout, snippet):
     """Request builder for CSS generation."""
-    api_key = provider.get("_api_key")
+    api_key: str = provider.get("_api_key") or ""
     if not api_key:
         import os as _os
-        api_key = _os.getenv(provider["key_env"])
+        api_key = _os.getenv(provider["key_env"], "")
     headers = build_provider_headers(provider, api_key)
     body = _build_generate_request_body(model, snippet)
     response = await client.post(provider["url"], headers=headers, json=body, timeout=timeout)
@@ -283,10 +283,10 @@ async def _request_generate(client, provider, model, timeout, snippet):
 
 async def _request_refine(client, provider, model, timeout, snippet, base_css):
     """Request builder for CSS refinement."""
-    api_key = provider.get("_api_key")
+    api_key: str = provider.get("_api_key") or ""
     if not api_key:
         import os as _os
-        api_key = _os.getenv(provider["key_env"])
+        api_key = _os.getenv(provider["key_env"], "")
     headers = build_provider_headers(provider, api_key)
     body = _build_refine_request_body(model, snippet, base_css)
     response = await client.post(provider["url"], headers=headers, json=body, timeout=timeout)
@@ -296,10 +296,10 @@ async def _request_refine(client, provider, model, timeout, snippet, base_css):
 
 async def _request_prompt_driven(client, provider, model, timeout, snippet, style_prompt):
     """Request builder for prompt-driven CSS generation."""
-    api_key = provider.get("_api_key")
+    api_key: str = provider.get("_api_key") or ""
     if not api_key:
         import os as _os
-        api_key = _os.getenv(provider["key_env"])
+        api_key = _os.getenv(provider["key_env"], "")
     headers = build_provider_headers(provider, api_key)
     body = _build_prompt_driven_request_body(model, snippet, style_prompt)
     response = await client.post(provider["url"], headers=headers, json=body, timeout=timeout)
