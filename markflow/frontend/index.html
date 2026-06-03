@@ -58,17 +58,22 @@ def greet(name):
 
       <div class="style-prompt">
         <button id="css-toggle" class="style-prompt__toggle" type="button">
-          <span class="css-toggle-arrow">▸</span>
-          <span class="style-prompt__label">Style Prompt</span>
+          <span class="css-toggle-arrow">▾</span>
+          <span class="style-prompt__label">Style</span>
         </button>
-        <div id="css-panel" class="style-prompt__panel collapsed">
+        <div id="css-panel" class="style-prompt__panel">
+          <div class="style-presets">
+            <button class="preset-chip" data-prompt="Clean academic paper style. Serif font (Georgia), single column, A4, page numbers, structured headings with borders, compact spacing, traditional formal typography.">Academic</button>
+            <button class="preset-chip" data-prompt="Modern minimalist design. Sans-serif font (Inter or Helvetica), generous whitespace, thin borders, subtle gray accents, clean typography hierarchy with lots of breathing room between sections.">Modern</button>
+            <button class="preset-chip" data-prompt="Ultra minimal. Black and white only, no decorations, no borders on headings, maximum whitespace, Helvetica font, content-focused, zero visual noise.">Minimal</button>
+            <button class="preset-chip" data-prompt="Dark theme document. Dark gray background (#1a1a2e), light text (#e0e0e0), blue accents (#4fc3f7), code blocks with darker background, modern tech document feel, vibrant syntax highlighting.">Dark</button>
+            <button class="preset-chip" data-prompt="Creative and vibrant design. Colorful section headers with gradient accents, playful but professional typography, magazine-style layout with visual flair, unique and eye-catching.">Creative</button>
+            <button class="preset-chip" data-prompt="Professional business report. Corporate navy (#1a365d) headers, clean tables with alternating rows, executive summary style, formal but modern, data-focused layout.">Report</button>
+          </div>
           <textarea
             id="style-prompt-input"
             class="style-prompt__textarea"
-            placeholder="Describe the look you want…
-e.g. 'Academic paper with serif font, single column, A4, page numbers'
-or 'Modern dark theme report with code highlighting, two-column'
-or 'Minimal cream background, clean tables, wide margins'"
+            placeholder="Pick a preset above or type your own style description…"
             spellcheck="true"
           ></textarea>
         </div>
