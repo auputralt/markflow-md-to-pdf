@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  var API_URL = "http://localhost:8000/generate";
+  var API_URL = "/generate";
   var TIMEOUT_MS = 120000;
 
   var states = {
