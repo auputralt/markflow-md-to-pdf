@@ -1,212 +1,195 @@
-# MarkFlow
+<p align="center">
+  <img src="https://raw.githubusercontent.com/auputralt/markflow-md-to-pdf/main/markflow/backend/favicon.svg" alt="MarkFlow" width="80" height="80">
+</p>
 
-Transform any text into beautiful, styled PDFs with AI-powered design.
+<h1 align="center">MarkFlow</h1>
 
-[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.95.0-green)](https://fastapi.tiangolo.com/)
-[![WeasyPrint](https://img.shields.io/badge/WeasyPrint-60.0-orange)](https://weasyprint.org/)
-[![OpenRouter](https://img.shields.io/badge/OpenRouter-API-important)](https://openrouter.ai/)
+<p align="center">
+  AI-powered Markdown to PDF converter with intelligent styling
+</p>
 
-MarkFlow converts raw text content — Markdown, JSON, HTML, or plain text — into professionally styled, multi-page PDFs. Leveraging AI via OpenRouter, it generates unique CSS designs tailored to each document, ensuring your content looks exceptional without manual styling.
+<p align="center">
+  <a href="https://github.com/auputralt/markflow-md-to-pdf/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11%2B-blue.svg" alt="Python"></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-0.129+-green.svg" alt="FastAPI"></a>
+  <a href="https://weasyprint.org/"><img src="https://img.shields.io/badge/WeasyPrint-68+-orange.svg" alt="WeasyPrint"></a>
+</p>
+
+---
+
+MarkFlow converts raw content — **Markdown, JSON, HTML, or plain text** — into professionally styled PDFs. It uses AI to analyze your content and generate unique CSS designs for each document, so your PDFs look polished without manual formatting.
 
 ## ✨ Features
 
-- **Multi-format Input**: Seamlessly handle Markdown, JSON, HTML, and plain text.
-- **AI-Powered Styling**: OpenRouter creates custom CSS for every document (fallback to professional hardcoded styles available).
-- **Custom CSS Override**: Inject your own CSS to fine-tune or completely replace AI-generated styles.
-- **Production-Ready PDF Output**: Includes typography hierarchy, page numbers, headers, code blocks, tables, and callout boxes.
-- **Responsive State Machine UI**: Clear loading, success, and error states with instant PDF preview.
-- **Zero-Dependency Frontend**: Pure HTML, CSS, and vanilla JavaScript for maximum compatibility.
+- **Multi-format input** — Markdown, JSON, HTML, plain text. Auto-detected.
+- **AI-powered styling** — Natural language style prompts. Describe what you want, AI writes the CSS.
+- **AI style recommendations** — Content-aware suggestions for theme, font, layout, page size, headers/footers, code block style, and table style.
+- **Provider fallback chain** — Bluesminds → OpenRouter. If one fails, the other takes over.
+- **CSS safety enforcement** — AI output is sanitized to prevent broken layouts (lists going inline, etc.).
+- **Custom CSS override** — Bring your own CSS or refine AI-generated styles.
+- **Production PDF output** — Page numbers, headers, syntax-highlighted code blocks, tables, callout boxes.
+- **4-state UI** — Clear idle → loading → success → error transitions.
+- **Zero-dependency frontend** — Pure HTML/CSS/vanilla JS. No build step.
 
-## 📋 Table of Contents
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Reference](#api-reference)
-- [Project Structure](#project-structure)
-- [Tech Stack](#tech-stack)
-- [Contribution Guidelines](#contribution-guidelines)
-- [Support](#support)
+## 🚀 Quick Start
 
-## 🔧 Prerequisites
+```bash
+# 1. Clone
+git clone https://github.com/auputralt/markflow-md-to-pdf.git
+cd markflow-md-to-pdf
 
-Before you begin, ensure you have the following installed:
-- [Python 3.11+](https://www.python.org/downloads/)
-- [pip](https://pip.pypa.io/en/stable/installation/)
-- An [OpenRouter API key](https://openrouter.ai/) (optional for fallback styling)
+# 2. Install backend dependencies
+pip install -r markflow/backend/requirements.txt
 
-## 🚀 Installation
+# 3. Configure API keys (optional — fallback CSS works without keys)
+cp markflow/backend/.env.example markflow/backend/.env
+# Edit .env with your keys
 
-Follow these steps to set up MarkFlow locally:
+# 4. Run
+cd markflow/backend
+uvicorn main:app --reload --port 8000
+```
 
-1. **Clone the repository** (if you haven't already):
-   ```bash
-   git clone https://github.com/your-username/markflow.git
-   cd markflow
-   ```
+Open `markflow/frontend/index.html` in your browser. That's it.
 
-2. **Install backend dependencies**:
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
+## 📖 Usage
 
-3. **Configure environment variables**:
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and add your OpenRouter API key:
-   ```env
-   OPENROUTER_API_KEY=your_key_here
-   ```
-   > **Note**: If you don't provide an API key, MarkFlow will use a built-in fallback CSS stylesheet.
+### Web Interface
 
-4. **Start the development server**:
-   ```bash
-   uvicorn main:app --reload --port 8000
-   ```
-   The backend will be available at `http://localhost:8000`.
+1. Paste content into the editor (Markdown, JSON, HTML, or text)
+2. Optionally describe your desired style in the prompt field (e.g. *"clean academic style with blue headers"*)
+3. Press **Ctrl+Enter** or click **Generate PDF**
+4. Preview and download
 
-5. **Open the frontend**:
-   - Open `frontend/index.html` in your browser, or
-   - Use a live server extension (e.g., Live Server for VS Code) for automatic reloads.
+### API
 
-## 💻 Usage
-
-### Via Web Interface
-1. Navigate to the frontend (typically `http://localhost:8000/frontend/index.html` if served via backend, or open `frontend/index.html` directly).
-2. Paste your content into the text area (Markdown, JSON, HTML, or plain text).
-3. Optionally, add custom CSS in the provided field.
-4. Press `Ctrl+Enter` (or `Cmd+Enter` on Mac) or click the "Generate PDF" button.
-5. Download the generated PDF from the preview pane.
-
-### Via API (cURL Example)
 ```bash
 curl -X POST "http://localhost:8000/generate" \
   -H "Content-Type: application/json" \
   -d '{
-    "content": "# Hello World\n\nThis is a test PDF generated via the MarkFlow API.",
-    "custom_css": "h1 { color: #2c3e50; border-bottom: 2px solid #3498db; }"
+    "content": "# Hello World\n\nThis is **bold** and *italic* text.",
+    "style_prompt": "minimalist dark theme"
   }' \
   -o output.pdf
 ```
 
-### Via API (Python Example)
 ```python
 import requests
 
-url = "http://localhost:8000/generate"
-payload = {
-    "content": "# Hello World\n\nGenerated from Python script.",
-    "custom_css": "body { font-family: 'Georgia', serif; }"
-}
-response = requests.post(url, json=payload)
+response = requests.post("http://localhost:8000/generate", json={
+    "content": "# Report\n\n## Summary\n\nKey findings go here.",
+    "style_prompt": "corporate report style"
+})
 
 if response.status_code == 200:
-    with open("output.pdf", "wb") as f:
+    with open("report.pdf", "wb") as f:
         f.write(response.content)
-    print("PDF saved as output.pdf")
-else:
-    print(f"Error: {response.status_code} - {response.text}")
 ```
 
-## 📚 API Reference
+### API Endpoints
 
-### Generate PDF
-**Endpoint**: `POST /generate`  
-**Description**: Converts input content to a styled PDF.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/generate` | POST | Convert content to styled PDF |
+| `/recommend` | POST | Get AI style recommendations for content |
+| `/health` | GET | Health check |
 
-**Request Body**:
-| Field        | Type   | Required | Description                          |
-|--------------|--------|----------|--------------------------------------|
-| `content`    | string | Yes      | Raw content to convert (Markdown, JSON, HTML, or plain text) |
-| `custom_css` | string | No       | Custom CSS to override AI-generated styles |
+**POST `/generate`** body:
 
-**Response**:
-- **Success**: Binary PDF (`application/pdf`) with header `Content-Disposition: attachment; filename="markflow-output.pdf"`
-- **Errors**:
-  - `422 Unprocessable Entity`: Empty input content
-  - `500 Internal Server Error`: PDF generation failed (details in response body)
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | Yes | Raw content (Markdown, JSON, HTML, text) |
+| `custom_css` | string | No | Override CSS entirely |
+| `style_prompt` | string | No | Natural language style description |
 
-### Health Check
-**Endpoint**: `GET /health`  
-**Description**: Verifies service availability.
+**POST `/recommend`** body:
 
-**Response**:
-```json
-{"status": "ok", "service": "markflow"}
-```
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | string | Yes | Content to analyze |
+| `style_prompt` | string | No | User's style preference to factor in |
+
+Returns recommended options for: theme, font, layout, page size, headers/footers, code blocks, tables, extras (TOC, watermark).
+
+## ⚙️ Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENROUTER_API_KEY` | No | OpenRouter API key for AI CSS generation |
+| `BLUESMINDS_API_KEY` | No | Bluesminds API key (primary provider) |
+| `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `*`) |
+
+Without API keys, MarkFlow uses a built-in fallback stylesheet. All AI features are gracefully skipped.
 
 ## 🗂️ Project Structure
 
 ```
-markflow/
-├── backend/
-│   ├── main.py              # FastAPI application setup and routes
-│   ├── converter.py         # Content detection and format conversion
-│   ├── ai_styler.py         # OpenRouter integration and CSS generation
-│   ├── pdf_renderer.py      # PDF rendering via WeasyPrint
-│   ├── styles/
-│   │   └── fallback.css     # Hardcoded default stylesheet
-│   ├── requirements.txt
-│   └── .env.example
-├── frontend/
-│   ├── index.html           # Main UI template
-│   ├── app.js               # Application logic and state management
-│   └── style.css            # Frontend-specific styling
+markflow-md-to-pdf/
+├── markflow/
+│   ├── backend/
+│   │   ├── main.py              # FastAPI app, routes, middleware
+│   │   ├── converter.py         # Content detection & format conversion
+│   │   ├── ai_styler.py         # AI CSS generation with prompt/refine modes
+│   │   ├── pdf_renderer.py      # WeasyPrint PDF rendering with timeout
+│   │   ├── providers.py         # AI provider config & fallback chain
+│   │   ├── recommender.py       # AI style recommendation engine
+│   │   ├── styles/
+│   │   │   └── fallback.css     # Built-in stylesheet when AI unavailable
+│   │   ├── favicon.svg
+│   │   ├── requirements.txt
+│   │   └── .env.example
+│   └── frontend/
+│       ├── index.html           # Main UI
+│       ├── app.js               # State machine & API client
+│       └── style.css            # Frontend styling
+├── render.yaml                  # Render.com deployment config
+├── LICENSE                      # MIT
 └── README.md
 ```
 
-## ⚙️ Tech Stack
+## 🏗️ Tech Stack
 
-- **Backend**:
-  - Python 3.11+
-  - [FastAPI](https://fastapi.tiangolo.com/) - High-performance web framework
-  - [WeasyPrint](https://weasyprint.org/) - HTML/CSS to PDF conversion
-  - [markdown-it-py](https://github.com/explosion/markdown-it-py) - Markdown parsing
-  - [httpx](https://www.python-httpx.org/) - HTTP client for OpenRouter
-  - [python-dotenv](https://pypi.org/project/python-dotenv/) - Environment variable management
-  - [uvicorn](https://www.uvicorn.org/) - ASGI server
+| Layer | Technology |
+|-------|-----------|
+| Backend | Python 3.11+, FastAPI, Uvicorn |
+| PDF Engine | WeasyPrint (CSS Paged Media) |
+| Markdown | markdown-it-py |
+| Syntax Highlighting | Pygments |
+| HTML Sanitization | lxml_html_clean |
+| AI Integration | httpx → Bluesminds / OpenRouter (OpenAI-compatible API) |
+| Frontend | Vanilla HTML, CSS, JavaScript |
 
-- **Frontend**:
-  - HTML5
-  - CSS3
-  - Vanilla JavaScript (no frameworks or dependencies)
+## 🌐 Deploy to Render (Free)
 
-- **AI Integration**:
-  - [OpenRouter](https://openrouter.ai/) - Access to LLMs for CSS generation
-  - Model: `openrouter/free` (configurable in `ai_styler.py`)
+1. Push to GitHub
+2. Go to [render.com](https://render.com) → **New** → **Web Service**
+3. Connect your repo
+4. Set **Build Command**:
+   ```
+   pip install -r markflow/backend/requirements.txt
+   ```
+5. Set **Start Command**:
+   ```
+   cd markflow/backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+   ```
+6. Set environment variables (`OPENROUTER_API_KEY`, `BLUESMINDS_API_KEY`)
+7. Choose **Free** instance type → Deploy
 
-## 🤝 Contribution Guidelines
+Or use the included `render.yaml` Blueprint for automatic config detection.
 
-We welcome contributions to make MarkFlow better! Please follow these guidelines:
+## 🤝 Contributing
 
-1. **Fork the repository** and create a new branch for your feature or bugfix.
-2. **Keep changes focused** and ensure they align with the project's scope.
-3. **Write clear, descriptive commit messages** following [Conventional Commits](https://www.conventionalcommits.org/).
-4. **Update documentation** as needed, especially if changing APIs or usage.
-5. **Submit a pull request** with a detailed explanation of your changes.
-6. **Respect the code style**: 
-   - Backend: Follow [PEP 8](https://peps.python.org/pep-0008/) with [Black](https://black.dev/) formatting.
-   - Frontend: Maintain consistent indentation and comment complex logic.
+1. Fork the repository
+2. Create a feature branch
+3. Commit with [Conventional Commits](https://www.conventionalcommits.org/)
+4. Open a pull request
 
-### Reporting Issues
-Please use the [issue tracker](https://github.com/your-username/markflow/issues) to report bugs or request features. Include:
-- A clear title and description
-- Steps to reproduce (for bugs)
-- Expected vs. actual behavior
-- Screenshots or logs if applicable
+## 📄 License
 
-## 🙋‍♂️ Support
-
-If you encounter any issues or have questions, please:
-- Check the [existing issues](https://github.com/your-username/markflow/issues) first
-- Open a new issue with the label `question` or `bug`
-- For urgent matters, you may reach out to the maintainers directly
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-Made with ❤️ by the MarkFlow Team
-
-*Transforming text into beauty, one PDF at a time.*
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/auputralt">auputra</a>
+</p>
