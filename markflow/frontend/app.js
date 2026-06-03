@@ -199,6 +199,51 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  // --- Style Preset Chips ---
+  var presetChips = document.querySelectorAll(".preset-chip");
+  var activePreset = null;
+
+  presetChips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var prompt = chip.getAttribute("data-prompt");
+
+      // Toggle off if clicking active preset
+      if (activePreset === chip) {
+        chip.classList.remove("preset-chip--active");
+        stylePromptInput.value = "";
+        activePreset = null;
+        return;
+      }
+
+      // Deactivate previous
+      if (activePreset) {
+        activePreset.classList.remove("preset-chip--active");
+      }
+
+      // Activate this one
+      chip.classList.add("preset-chip--active");
+      stylePromptInput.value = prompt;
+      activePreset = chip;
+    });
+  });
+
+  // Clear active preset when user types custom text
+  if (stylePromptInput) {
+    stylePromptInput.addEventListener("input", function () {
+      var matchesPreset = false;
+      presetChips.forEach(function (chip) {
+        if (chip.getAttribute("data-prompt") === stylePromptInput.value) {
+          matchesPreset = true;
+        }
+      });
+
+      if (!matchesPreset && activePreset) {
+        activePreset.classList.remove("preset-chip--active");
+        activePreset = null;
+      }
+    });
+  }
+
   // --- Event Listeners ---
   generateBtn.addEventListener("click", generatePDF);
   cssToggle.addEventListener("click", toggleCssPanel);
